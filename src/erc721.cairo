@@ -1,87 +1,39 @@
 #[contract]
-
 mod ERC721 {
+    use starknet::get_caller_address;
+    use starknet::contract_address_const;
+    use starknet::ContractAddressZeroable;
 
-    struct Storage { 
+    struct Storage {
         name: felt,
         symbol: felt,
+        balance: LegacyMap::<ContractAddress, felt>,
     }
-    
+
     #[event]
+    fn Transfer(from: ContractAddress, to: ContractAddress, token_id: u256) {}
+
+    #[event]
+    fn Approval(owner: ContractAddress, spender: ContractAddress, token_id: u256) {}
 
     #[constructor]
-    fn constructor(_name: felt, _symbol: felt) {
-        name::write(_name);
-        symbol::write(_symbol);
+    fn constructor(name_: felt, symbol_: felt) {
+        name::write(name_);
+        symbol::write(symbol_);
     }
 
-    trait IERC721 {
-
-    fn name() -> felt;
-
-    fn symbol() -> felt;
-
-    fn token_uri(tokenId: u256) -> felt;
-
-    fn balance_of(owner: felt) -> u256;
-
-    fn owner_of(tokenId: u256) -> felt;
-
-    fn transfer_from(_from: felt, to: felt, tokenId: u256);
-
-    fn approve(approved: felt, tokenId: u256);
-
-    fn set_approval_for_all(operator: felt, approved: felt);
-
-    fn get_approved(tokenId: u256) -> felt;
-
-    fn is_approved_for_all(owner: felt, operator: felt) -> felt;
+    #[view]
+    fn get_name() -> felt {
+        name::read()
     }
 
-    impl ERC721 of IERC721{
+    #[view]
+    fn get_symbol() -> felt {
+        symbol::read()
+    }
 
-        #[view]
-        fn name() -> felt {
-            return name::read();
-        }
-
-        #[view]
-        fn symbol() -> felt {
-            return symbol::read();
-        }
-
-        #[view]
-        fn token_uri(tokenId: u256) -> felt {
-        }
-
-        #[view]
-        fn balance_of(owner: felt) -> u256 {
-        }
-
-        #[view]
-        fn owner_of(tokenId: u256) -> felt {
-        }
-
-        #[external]
-        fn transfer_from(_from: felt, to: felt, tokenId: u256) {
-        }
-
-        #[external]
-        fn approve(approved: felt, tokenId: u256) {
-        }
-
-        #[external]
-        fn set_approval_for_all(operator: felt, approved: felt) {
-        }
-
-        #[external]
-        fn get_approved(tokenId: u256) -> felt {
-        }
-
-        #[external]
-        fn is_approved_for_all(owner: felt, operator: felt) -> felt {
-        }
-  
-    
+    #[view]
+    fn get_balance(address: ContractAddress) -> felt{
+        balance::read(address)
     }
 }

@@ -1,4 +1,4 @@
 // All modules must be present here
 
-// mod erc721;
-mod fib;
+mod erc721;
+mod test;
